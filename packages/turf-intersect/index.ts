@@ -49,9 +49,20 @@ export default function intersect<P = Properties>(
     const geom2 = getGeom(poly2);
 
     if (geom1.type === "Polygon" && geom2.type === "Polygon") {
-      const intersection: any = martinez.intersection(geom1.coordinates, geom2.coordinates);
+      let intersection: any = martinez.intersection(geom1.coordinates, geom2.coordinates);
 
       if (intersection === null || intersection.length === 0) { return null; }
+      
+      let cur = intersection;
+      let arrayDepth = 0;
+      while (Array.isArray(cur)) {
+        arrayDepth += 1;
+        cur = cur[0];
+      }
+      for (var i = 0; i < arrayDepth - 4 && intersection.length === 1; i++) {
+        intersection = intersection[0];
+      }
+
       if (intersection.length === 1) {
           const start = intersection[0][0][0];
           const end = intersection[0][0][intersection[0][0].length - 1];
